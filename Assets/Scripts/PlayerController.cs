@@ -9,56 +9,55 @@ public class PlayerController : MonoBehaviour {
 	public float rotationFactor = 50f;
 		
 	private Rigidbody rb;
+	private string horizontalAxis;
+	private string verticalAxis;
 
-	void Start() {
+	void Start()
+	{
 		rb = GetComponent<Rigidbody> ();
+
+		if(name == "Player1") {
+			horizontalAxis = "Horizontal";
+			verticalAxis = "Vertical";
+		} else {
+			horizontalAxis = "HorizontalP2";
+			verticalAxis = "VerticalP2";
+		}
 	}
 
-	void FixedUpdate () {
-		bool isAccelerating;
-		bool isRotatingLeft;
-		bool isRotatingRight;
+	void FixedUpdate ()
+	{
+		Rotate ();
+		Move ();
+		Clamp ();
+	}
 
-		if (name == "Player1") {
-			isAccelerating = Input.GetKey (KeyCode.W);
-			isRotatingLeft = Input.GetKey (KeyCode.A);
-			isRotatingRight = Input.GetKey (KeyCode.D);
-		} else {
-			isAccelerating = Input.GetKey (KeyCode.I);
-			isRotatingLeft = Input.GetKey (KeyCode.J);
-			isRotatingRight = Input.GetKey (KeyCode.L);
-		}
+	void Rotate ()
+	{
+		float rotationDirection = Input.GetAxis (horizontalAxis);
 
 		if (!rb.velocity.Equals (Vector3.zero)) {
-			if (isRotatingLeft) {
-				transform.Rotate (new Vector3(0, -1, 0) * rotationFactor * Time.deltaTime);
-			} else if (isRotatingRight) {
-				transform.Rotate (new Vector3(0, 1, 0) * rotationFactor * Time.deltaTime);
-			}
+			transform.Rotate (new Vector3 (0, rotationDirection, 0) * rotationFactor * Time.deltaTime);
 		}
+	}
 
-		if(rb.velocity.magnitude > maximumSpeed) {
+	void Move ()
+	{
+		bool isAccelerating = Input.GetButton (verticalAxis);
+
+		if (rb.velocity.magnitude > maximumSpeed) {
 			rb.AddForce ((transform.forward * -1) * (rb.velocity.magnitude - maximumSpeed));
 		} else if (isAccelerating) {
 			rb.AddForce (transform.forward * acceleration);
 		}
+	}
 
-
-		if(
-			transform.position.z > 9f ||
-			transform.position.z < -9f ||
-			transform.position.x > 12f ||
-			transform.position.x < -12f ) {
-
+	void Clamp ()
+	{
+		if (transform.position.z > 9f || transform.position.z < -9f || transform.position.x > 12f || transform.position.x < -12f) {
 			rb.velocity *= -1;
-
-			rb.position = new Vector3
-				(
-					Mathf.Clamp (rb.position.x, -12f, 12f),
-					0.0f,
-					Mathf.Clamp (rb.position.z, -9f, 9f)
-				);
-			
 		}
+
+		rb.position = new Vector3 (Mathf.Clamp (rb.position.x, -12f, 12f), 0.0f, Mathf.Clamp (rb.position.z, -9f, 9f));
 	}
 }
