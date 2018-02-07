@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
 	public float acceleration = 50f;
+	public float maximumSpeed = 10f;
 	public float rotationFactor = 50f;
 		
 	private Rigidbody rb;
@@ -26,7 +27,9 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 
-		if (isAccelerating) {
+		if(rb.velocity.magnitude > maximumSpeed) {
+			rb.AddForce ((transform.forward * -1) * (rb.velocity.magnitude - maximumSpeed));
+		} else if (isAccelerating) {
 			rb.AddForce (transform.forward * acceleration);
 		}
 
