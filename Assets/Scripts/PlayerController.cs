@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-	public float accelaration = 50f;
+	public float acceleration = 50f;
 	public float rotationFactor = 50f;
 		
 	private Rigidbody rb;
@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour {
 
 	void FixedUpdate () {
 		Debug.Log (rb.velocity);
-		bool isAccelarating = Input.GetKey (KeyCode.W);
+		bool isAccelerating = Input.GetKey (KeyCode.W);
 		bool isRotatingLeft = Input.GetKey (KeyCode.A);
 		bool isRotatingRight = Input.GetKey (KeyCode.D);
 
@@ -27,8 +27,8 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 
-		if (isAccelarating) {
-			rb.AddForce (transform.forward * accelaration);
+		if (isAccelerating) {
+			rb.AddForce (transform.forward * acceleration);
 		}
 	}
 }
