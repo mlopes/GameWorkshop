@@ -15,9 +15,19 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		bool isAccelerating = Input.GetKey (KeyCode.W);
-		bool isRotatingLeft = Input.GetKey (KeyCode.A);
-		bool isRotatingRight = Input.GetKey (KeyCode.D);
+		bool isAccelerating;
+		bool isRotatingLeft;
+		bool isRotatingRight;
+
+		if (name == "Player1") {
+			isAccelerating = Input.GetKey (KeyCode.W);
+			isRotatingLeft = Input.GetKey (KeyCode.A);
+			isRotatingRight = Input.GetKey (KeyCode.D);
+		} else {
+			isAccelerating = Input.GetKey (KeyCode.I);
+			isRotatingLeft = Input.GetKey (KeyCode.J);
+			isRotatingRight = Input.GetKey (KeyCode.L);
+		}
 
 		if (!rb.velocity.Equals (Vector3.zero)) {
 			if (isRotatingLeft) {
