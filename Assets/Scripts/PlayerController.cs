@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void FixedUpdate () {
-		Debug.Log (rb.velocity);
 		bool isAccelerating = Input.GetKey (KeyCode.W);
 		bool isRotatingLeft = Input.GetKey (KeyCode.A);
 		bool isRotatingRight = Input.GetKey (KeyCode.D);
@@ -29,6 +28,24 @@ public class PlayerController : MonoBehaviour {
 
 		if (isAccelerating) {
 			rb.AddForce (transform.forward * acceleration);
+		}
+
+
+		if(
+			transform.position.z > 9f ||
+			transform.position.z < -9f ||
+			transform.position.x > 12f ||
+			transform.position.x < -12f ) {
+
+			rb.velocity *= -1;
+
+			rb.position = new Vector3
+				(
+					Mathf.Clamp (rb.position.x, -12f, 12f),
+					0.0f,
+					Mathf.Clamp (rb.position.z, -9f, 9f)
+				);
+			
 		}
 	}
 }
