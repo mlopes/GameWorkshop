@@ -11,7 +11,8 @@ public class PlayerController : MonoBehaviour {
 	public float maximumAngularSpeed = 10f;
 
 	[Header("Fire Settings")]
-	public float fireRate;
+	public float fireRate = 1f;
+	public float burstTime = 1f;
 
 	[Header("Associated Objects")]
 	public GameObject shot;
@@ -23,11 +24,15 @@ public class PlayerController : MonoBehaviour {
 	private string verticalAxis;
 	private string fireButton;
 
-	private float timeWhenItCanFireAfain;
+	private float timeWhenItCanFireAgain;
+	private float fireCuttoff;
+	private bool isFiring;
 
 	void Start()
 	{
 		rb = GetComponent<Rigidbody> ();
+
+		isFiring = false;
 
 		if(name == "Player1") {
 			horizontalAxis = "Horizontal";
@@ -42,9 +47,21 @@ public class PlayerController : MonoBehaviour {
 
 	void Update()
 	{
-		if (Input.GetButton(fireButton) && Time.time > timeWhenItCanFireAfain) {
-			timeWhenItCanFireAfain = Time.time + fireRate;
-			Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+		if (Input.GetButton(fireButton) && Time.time > timeWhenItCanFireAgain) {
+			if(isFiring == false) {
+				isFiring = true;
+				fireCuttoff = Time.time + burstTime;
+			}
+				
+			if (Time.time >= fireCuttoff) {
+				timeWhenItCanFireAgain = Time.time + fireRate;
+				isFiring = false;
+			} else {
+				Instantiate (shot, shotSpawn.position, shotSpawn.rotation);
+			}
+		} else if(isFiring) {
+			timeWhenItCanFireAgain = (Time.time + fireRate) - (fireCuttoff - Time.time);
+			isFiring = false;
 		}
 	}
 
