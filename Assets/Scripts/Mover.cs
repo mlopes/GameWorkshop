@@ -11,7 +11,7 @@ public class Mover : MonoBehaviour {
 
 	void Start () {
 		Rigidbody rb = GetComponent<Rigidbody> ();
-		rb.velocity = transform.forward * speed;
+		rb.velocity = transform.forward * Random.Range(speed-1, speed+1);
 		expiryTime = Time.time + lifetime;
 	}
 
