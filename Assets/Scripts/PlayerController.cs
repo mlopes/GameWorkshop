@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
 	public float acceleration = 50f;
 	public float maximumSpeed = 10f;
 	public float rotationFactor = 50f;
+	public float maximumAngularSpeed = 10f;
 
 	[Header("Fire Settings")]
 	public float fireRate;
@@ -54,16 +55,18 @@ public class PlayerController : MonoBehaviour {
 		Clamp ();
 	}
 
-	void Rotate ()
+	private void Rotate ()
 	{
 		float rotationDirection = Input.GetAxis (horizontalAxis);
 
-		if (!rb.velocity.Equals (Vector3.zero)) {
-			transform.Rotate (new Vector3 (0, rotationDirection, 0) * rotationFactor * Time.deltaTime);
+		if (rb.angularVelocity.magnitude > maximumAngularSpeed || rb.angularVelocity.magnitude < -maximumSpeed) {
+			rb.AddTorque ((transform.up * -1) * (rb.angularVelocity.magnitude - maximumSpeed));
+		} else {
+			rb.AddTorque (transform.up * rotationDirection * rotationFactor * Time.deltaTime);
 		}
 	}
 
-	void Move ()
+	private void Move ()
 	{
 		bool isAccelerating = Input.GetButton (verticalAxis);
 
@@ -74,12 +77,35 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	void Clamp ()
+	private void Clamp ()
+	{
+		BumpAgainstTheEdges ();
+
+		ClampPosition ();
+
+		ClampRotation ();
+	}
+
+	private void BumpAgainstTheEdges ()
 	{
 		if (transform.position.z > 9f || transform.position.z < -9f || transform.position.x > 12f || transform.position.x < -12f) {
 			rb.velocity *= -1;
 		}
+	}
 
+	private void ClampPosition ()
+	{
 		rb.position = new Vector3 (Mathf.Clamp (rb.position.x, -12f, 12f), 0.0f, Mathf.Clamp (rb.position.z, -9f, 9f));
+	}
+
+	private void ClampRotation ()
+	{
+		if (rb.rotation.y != 0) {
+			Quaternion r = rb.rotation;
+			r.x = 0;
+			r.z = 0;
+			float m = Mathf.Sqrt (r.x * r.x + r.y * r.y + r.z * r.z + r.w * r.w);
+			rb.rotation = new Quaternion (r.x / m, r.y / m, r.z / m, r.w / m);
+		}
 	}
 }
