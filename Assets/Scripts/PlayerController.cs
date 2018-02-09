@@ -28,8 +28,12 @@ public class PlayerController : MonoBehaviour {
 	private float fireCuttoff;
 	private bool isFiring;
 
+	private float health;
+
 	void Start()
 	{
+		health = 1;
+
 		rb = GetComponent<Rigidbody> ();
 
 		isFiring = false;
@@ -123,6 +127,19 @@ public class PlayerController : MonoBehaviour {
 			r.z = 0;
 			float m = Mathf.Sqrt (r.x * r.x + r.y * r.y + r.z * r.z + r.w * r.w);
 			rb.rotation = new Quaternion (r.x / m, r.y / m, r.z / m, r.w / m);
+		}
+	}
+
+	void OnCollisionEnter(Collision collision) {
+
+		if (collision.collider.CompareTag("Shot")) {
+			health -= .1f;
+		} else {
+			health -= .5f;
+		}
+
+		if (health <= 0) {
+			Destroy (gameObject);
 		}
 	}
 }
