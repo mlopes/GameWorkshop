@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour {
 	public float burstTime = 1f;
 
 	[Header("Associated Objects")]
+	public GameObject explosion;
 	public GameObject shot;
 	public Transform shotSpawn;
 
@@ -38,7 +39,7 @@ public class PlayerController : MonoBehaviour {
 
 		isFiring = false;
 
-		if(name == "Player1") {
+		if(CompareTag("Player1")) {
 			horizontalAxis = "Horizontal";
 			verticalAxis = "Vertical";
 			fireButton = "Fire1";
@@ -140,6 +141,8 @@ public class PlayerController : MonoBehaviour {
 
 		if (health <= 0) {
 			Destroy (gameObject);
+			GameObject explosionAnimation = (GameObject)Instantiate(explosion, transform.position, transform.rotation);
+			Destroy (explosionAnimation.gameObject, 1.1f);
 		}
 	}
 }
