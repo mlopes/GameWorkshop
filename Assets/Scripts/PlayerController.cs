@@ -25,14 +25,20 @@ public class PlayerController : MonoBehaviour {
 	private string verticalAxis;
 	private string fireButton;
 
+	private string playerIdentifier;
+
 	private float timeWhenItCanFireAgain;
 	private float fireCuttoff;
 	private bool isFiring;
 
 	private float health;
 
+	private GameController gameController;
+
 	void Start()
 	{
+		FindGameController ();
+
 		health = 1;
 
 		rb = GetComponent<Rigidbody> ();
@@ -43,10 +49,22 @@ public class PlayerController : MonoBehaviour {
 			horizontalAxis = "Horizontal";
 			verticalAxis = "Vertical";
 			fireButton = "Fire1";
+			playerIdentifier = "Player1";
 		} else {
 			horizontalAxis = "HorizontalP2";
 			verticalAxis = "VerticalP2";
 			fireButton = "Fire2";
+			playerIdentifier = "Player2";
+		}
+	}
+
+	private void FindGameController() {
+		GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
+		if (gameControllerObject != null) {
+			gameController = gameControllerObject.GetComponent <GameController>();
+		}
+		if (gameController == null) {
+			Debug.Log ("Cannot find 'GameController' script");
 		}
 	}
 
@@ -143,6 +161,7 @@ public class PlayerController : MonoBehaviour {
 			Destroy (gameObject);
 			GameObject explosionAnimation = (GameObject)Instantiate(explosion, transform.position, transform.rotation);
 			Destroy (explosionAnimation.gameObject, 1.1f);
+			gameController.PlayerGotKilled (playerIdentifier);
 		}
 	}
 }
